@@ -11,7 +11,12 @@ namespace Zenject
 {
 	public abstract class CompositionRootBase : MonoBehaviour 
 	{
-		public MonoInstaller[] Installers = new MonoInstaller[0];
+		[SerializeField]
+		private MonoInstaller[] _installers = new MonoInstaller[0];
+
+		[SerializeField]
+		private GameObject _groupInstallers;
+
 		protected DiContainer _container;
 		protected IDependencyRoot _dependencyRoot = null;
 
@@ -34,9 +39,18 @@ namespace Zenject
 
 		protected void InitializeInstallers(List<IInstaller> extraInstallers)
 		{
-			List<IInstaller> allInstallers = extraInstallers.Concat(Installers).ToList();
+			List<IInstaller> allInstallers = GetGroupInstallers().Concat(_installers).ToList();
+			allInstallers = extraInstallers.Concat(allInstallers).ToList();
 			CompositionRootHelper.InstallStandardInstaller(_container, this.gameObject);
 			CompositionRootHelper.InstallSceneInstallers(_container, allInstallers);
+		}
+
+		private List<IInstaller> GetGroupInstallers()
+		{
+			if(_groupInstallers == null)
+				return new List<IInstaller>();
+
+			return new List<IInstaller>(_groupInstallers.GetComponents<MonoInstaller>());
 		}
 	}
 }

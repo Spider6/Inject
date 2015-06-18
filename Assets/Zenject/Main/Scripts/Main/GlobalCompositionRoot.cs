@@ -35,6 +35,12 @@ namespace Zenject
 				DestroyImmediate(this.gameObject);
         }
 
+		public DiContainer GetContainer(bool allowNullBindings)
+		{
+			Initilize();
+			return _container;
+		}
+
 		protected override void CreateContainer (bool allowNullBindings, DiContainer parentContainer)
 		{
 			Assert.That(allowNullBindings || gameObject != null);
@@ -48,12 +54,6 @@ namespace Zenject
 			InitializeInstallers(new List<IInstaller>());
 			Instance = this;
 		}
-
-        public DiContainer GetContainer(bool allowNullBindings)
-        {
-			Initilize();
-            return _container;
-        }
     }
 }
 
